@@ -1,0 +1,56 @@
+﻿@model List<Student>
+
+@{
+    ViewData["Title"] = "Estudiantes";
+}
+
+<h1 class="bg-info text-white">Estudiantes</h1>
+<a asp-controller="Student" asp-action="AddOrEdit" class="btn btn-secondary">Añadir</a>
+<br />
+
+<div class="bg-light p-3 mt-3">
+
+    <form action="/Student/Search" method="post">
+        <div class="row">
+            <div class="col-md-2">
+                <label>Buscar por nombre</label>
+            </div>
+            <div class="col-md-7">
+                <div class="form-group">                    
+                    <input type="text" class="form-control" />
+                </div>
+            </div>            
+            <div class="col-md-3">
+                <button type="submit" formmethod="post" class="btn btn-primary btn-block">Buscar</button>
+            </div>
+        </div>                
+    </form>
+</div>
+<br />
+<hr />
+
+    @if (Model != null)
+    {
+        <table class="table table-sm table-bordered">
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Calificación</th>
+                <th>Operaciones</th>
+            </tr>
+            @foreach (var estudiante in @Model)
+            {
+                <tr>
+                    <td>@estudiante.Id</td>
+                    <td>@estudiante.Name</td>
+                    <td>@estudiante.Grade</td>
+                    <td>@estudiante.Email</td>
+                    <td>
+                        <a asp-action="AddOrEdit" asp-route-id="@estudiante.Id"><i class="fa fa-marker fa-lg"></i></a>
+                        <a asp-action="Delete" asp-route-id="@estudiante.Id" class="text-danger ml-1"
+                           onclick="return confirm('¿Está seguro que desea eliminar este registro?')"><i class="fa fa-trash-alt fa-lg"></i></a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }

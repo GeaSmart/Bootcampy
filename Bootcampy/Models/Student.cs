@@ -2,10 +2,8 @@
 
 namespace Bootcampy.Models
 {
-    public class Student
+    public class Student : BaseEntity
     {
-        public int Id { get; set; }
-
         [Required]
         [StringLength(75)]
         public string Name { get; set; }
