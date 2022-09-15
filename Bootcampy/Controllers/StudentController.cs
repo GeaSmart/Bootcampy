@@ -41,8 +41,18 @@ namespace Bootcampy.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOrEdit([FromForm] Student student)
         {
+
+
             if (ModelState.IsValid)
             {
+                Expression<Func<Student, bool>> filter = m => m.Email.Contains(student.Email);
+                var estudiantesFiltrados = await repository.ReadAllAsync(filter);
+                if (estudiantesFiltrados.Count >0)
+                {
+                    ModelState.AddModelError("", "Ya existe un estudiante registrado con ese email");
+                    return View(student);
+                }                
+
                 if (student.Id == 0)
                     await repository.CreateAsync(student);
                 else
