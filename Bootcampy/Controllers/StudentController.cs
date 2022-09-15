@@ -1,6 +1,9 @@
-﻿using Bootcampy.Models;
+﻿using Bootcampy.DTO;
+using Bootcampy.Models;
 using Bootcampy.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace Bootcampy.Controllers
 {
@@ -16,8 +19,16 @@ namespace Bootcampy.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var estudiantes = await repository.ReadAllAsync();
-            return View(estudiantes);
+            var dto = new StudentSearchDTO();
+            if (TempData["myObject"] != null)
+            {
+                dto = JsonConvert.DeserializeObject<StudentSearchDTO>((string)TempData["myObject"]);
+            }
+            else
+            {
+                dto.EstudiantesFiltrados = await repository.ReadAllAsync();
+            }
+            return View(dto);
         }
 
         [HttpGet]
@@ -47,5 +58,21 @@ namespace Bootcampy.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Search([FromForm] StudentSearchDTO studentDTO)
+        {
+            var listado = new List<Student>();
+            Expression<Func<Student, bool>> filter = m => m.Name.Contains(studentDTO.Estudiante.Name);
+
+            if (string.IsNullOrEmpty(studentDTO.Estudiante.Name))
+                listado = await repository.ReadAllAsync();
+            else
+                listado = await repository.ReadAllAsync(filter);
+
+            var listadoBusqueda = new StudentSearchDTO() { Estudiante = studentDTO.Estudiante, EstudiantesFiltrados = listado };
+            TempData["myObject"] = JsonConvert.SerializeObject(listadoBusqueda);
+
+            return RedirectToAction("Index");
+        }
     }
 }
