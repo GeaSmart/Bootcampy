@@ -19,6 +19,33 @@ namespace Bootcampy.Controllers
             var estudiantes = await repository.ReadAllAsync();
             return View(estudiantes);
         }
- 
+
+        [HttpGet]
+        public async Task<IActionResult> AddOrEdit(int id = 0)
+        {
+            var student = await repository.ReadOneAsync(id);
+            return View(student);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrEdit([FromForm] Student student)
+        {
+            if (ModelState.IsValid)
+            {
+                if (student.Id == 0)
+                    await repository.CreateAsync(student);
+                else
+                    await repository.UpdateAsync(student);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(student);
+        }
+        
+        public async Task<IActionResult> Delete(int id)
+        {
+            await repository.DeleteAsync(id);
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }

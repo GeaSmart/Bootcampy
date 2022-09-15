@@ -1,0 +1,52 @@
+﻿@model Student
+
+@{
+    ViewData["Title"] = "Create a Student";
+}
+
+<h1 class="bg-info text-white">Create a new Student</h1>
+<hr />
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form action="/Student/AddOrEdit" method="post">
+    <input type="hidden" asp-for="@Model.Id" value="@(Model==null?0:Model.Id)"/>
+    <div class="form-group">
+        <label asp-for="@Model.Name"></label>
+        <input type="text" asp-for="@Model.Name" class="form-control" />
+        <span asp-validation-for="@Model.Name" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Grade"></label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                       <div class="input-group-text">#</div>
+                    </div>
+                    <input type="text" asp-for="@Model.Grade" class="form-control" />
+                </div>        
+                <span asp-validation-for="@Model.Grade" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="@Model.Email"></label>
+                <input type="email" asp-for="@Model.Email" class="form-control" />
+                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <button type="submit" class="btn btn-primary" formmethod="post">Enviar</button>
+        </div>        
+    </div>
+    
+</form>
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
